@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Invoice;
 use App\Form\CheckoutFormType;
 use App\Entity\Product;
 use App\Repository\ProductRepository;
@@ -40,6 +41,23 @@ class CartController extends AbstractController
      */
     public function checkout (Request $request, ProductRepository $productRepository, \Swift_Mailer $mailer)
     {
+        $em = $this->getDoctrine()->getManager();
+        $invoice = new Invoice();
+        $paidtrue = 1;
+        $datum = new \DateTime("now");
+        $invoice->setPaid($paidtrue);
+        $invoice->setPaymentDate($datum);
+        $invoice->setUserId($this->getUser());
+        dump($invoice);
+
+        $em->persist($invoice);
+        $em->flush();
+
+
+
+
+
+
         $form = $this->createForm(CheckoutFormType::class);
         $form->handleRequest($request);
         $cart = $this->session->get("Cart", array());
@@ -50,8 +68,8 @@ class CartController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $formData = $form->getData();
             $message = (new \Swift_Message('Bevestegings Email!'))
-                ->setFrom('info@webshop.com')
-                ->setReplyTo('1018265@mborijnland.nl')
+                ->setFrom('giovannivr@live.com')
+                ->setReplyTo('1021472@mborijnland.nl')
                 ->setTo($formData['Email'])
                 ->setBody(
                     $this->renderView(
@@ -62,6 +80,9 @@ class CartController extends AbstractController
                 )
             ;
             $mailer->send($message);
+
+
+
             $this->session->set("Cart", array());
             return $this->redirectToRoute('product_index');
         }
