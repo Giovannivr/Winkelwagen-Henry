@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Product index{% endblock %}
+
+{% block body %}
+    <h1>Product index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Price</th>
+                <th>Code</th>
+                <th>Taxcode</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for product in products %}
+            <tr>
+                <td>{{ product.id }}</td>
+                <td>{{ product.name }}</td>
+                <td>{{ product.description }}</td>
+                <td>{{ product.price }}</td>
+                <td>{{ product.code }}</td>
+                <td>{{ product.taxcode }}</td>
+                {% if is_granted('ROLE_ADMIN') %}
+                <td>
+                    <a class="btn btn-primary" href="{{ path('product_show', {'id': product.id}) }}">show</a>
+                    <a class="btn btn-warning" href="{{ path('product_edit', {'id': product.id}) }}">edit</a>
+                </td>
+                {% else %}
+                <td>
+                    <a class="btn btn-success" href="{{ path('product_add', {'id': product.id}) }}">add to cart</a>
+                    <a class="btn btn-danger" href="{{ path('product_del', {'id': product.id}) }}">delete from cart</a>                                    
+                </td>
+                {% endif %}
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% if is_granted('ROLE_ADMIN') %}
+    <a class="btn btn-success" href="{{ path('product_new') }}">Create new</a>
+    {% endif %}
+{% endblock %}

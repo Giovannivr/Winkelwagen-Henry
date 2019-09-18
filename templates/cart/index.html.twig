@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello CartController!{% endblock %}
+
+{% block body %}
+<div class="example-wrapper">
+        <h1>Winkelwagen</h1>
+            <table class="table">
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Amount</th>
+                    <th>Price</th>
+                    <th>Total Price</th>
+                </tr>
+                {% for product in Products %}
+                <tr>
+                    <td>
+                        {{ product.Product.Name }}
+                    </td>
+                    <td>
+                        {{ product.Product.Description }}
+                    </td>
+                    <td>
+                        {{ product.Amount }}
+                    </td>
+                    <td>
+                        {{ product.Product.Price }}
+                    </td>
+                    <td>
+                        {{ product.Product.Price * product.Amount}}
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6">no records found</td>
+                </tr>
+                {% endfor %}
+            </table>
+            {% if Products != null %}
+            <div style="display: flex; justify-content:flex-end">
+                    <a class="btn btn-secondary" href="{{ path('checkout') }}">Checkout</a>
+                </div>
+            {% endif %}
+</div>
+{% endblock %}
